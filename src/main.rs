@@ -3,8 +3,16 @@
 #![no_std]
 #![allow(unused_imports)]
 
+use panic_probe as _;
+
+// same panicking *behavior* as `panic-probe` but doesn't print a panic message
+// this prevents the panic message being printed *twice* when `defmt::panic` is invoked
+#[defmt::panic_handler]
+fn panic() -> ! {
+    cortex_m::asm::udf()
+}
+
 use defmt_rtt as _;
-use panic_rtt_target as _panic_handler;
 use rtic::app;
 
 #[app(device = stm32f4xx_hal::pac, peripherals = true, dispatchers = [SPI1])]
