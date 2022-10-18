@@ -1,0 +1,33 @@
+[package]
+name = "rfb-embassy-atomic"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+panic-probe = { version = "0.3.0", features = ["print-rtt"] }
+embassy-executor = { version = "0.1.0", features = [
+    "defmt",
+    "integrated-timers",
+] }
+defmt = "0.3.0"
+defmt-rtt = "0.3.2"
+embassy-stm32 = { version = "0.1.0", features = [
+    "defmt",
+    "nightly",
+    "unstable-traits",
+    "defmt",
+    "stm32f411re",
+    "unstable-pac",
+    "memory-x",
+    "time-driver-any",
+    "exti",
+] }
+cortex-m-rt = "0.7.1"
+critical-section = "1.1.1"
+
+[patch.crates-io]
+embassy-time = { git = "https://github.com/embassy-rs/embassy" }
+embassy-futures = { git = "https://github.com/embassy-rs/embassy" }
+embassy-sync = { git = "https://github.com/embassy-rs/embassy" }
+embassy-stm32 = { git = "https://github.com/embassy-rs/embassy" }
+embassy-executor = { git = "https://github.com/embassy-rs/embassy" }
