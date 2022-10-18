@@ -175,6 +175,7 @@ checksum = "70858629a458fdfd39f9675c4dc309411f2a3f83bede76988d81bf1a0ecee9e0"
 dependencies = [
  "bare-metal 0.2.5",
  "bitfield",
+ "critical-section 1.1.1",
  "embedded-hal 0.2.7",
  "volatile-register",
 ]
@@ -810,7 +811,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ab1f00eac22bd18f8e5cae9555f2820b3a0c166b5b556ee3e203746ea6dcf3a"
 dependencies = [
  "cortex-m",
- "rtt-target",
 ]
 
 [[package]]
@@ -918,8 +918,8 @@ checksum = "a3f87b73ce11b1619a3c6332f45341e0047173771e8b8b73f87bfeefb7b56244"
 name = "rfb-embassy-atomic"
 version = "0.1.0"
 dependencies = [
+ "cortex-m",
  "cortex-m-rt",
- "critical-section 1.1.1",
  "defmt",
  "defmt-rtt",
  "embassy-executor",
@@ -946,15 +946,6 @@ checksum = "88aa938cda42a0cf62a20cfe8d139ff1af20c2e681212b5b34adb5a58333f222"
 dependencies = [
  "lazy_static",
  "regex",
-]
-
-[[package]]
-name = "rtt-target"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "065d6058bb1204f51a562a67209e1817cf714759d5cf845aa45c75fa7b0b9d9b"
-dependencies = [
- "ufmt-write",
 ]
 
 [[package]]
@@ -1173,12 +1164,6 @@ dependencies = [
  "quote",
  "syn",
 ]
-
-[[package]]
-name = "ufmt-write"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e87a2ed6b42ec5e28cc3b94c09982969e9227600b2e3dcbc1db927a84c06bd69"
 
 [[package]]
 name = "unicode-ident"

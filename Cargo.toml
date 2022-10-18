@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-panic-probe = { version = "0.3.0", features = ["print-rtt"] }
+panic-probe = { version = "0.3.0" }
 embassy-executor = { version = "0.1.0", features = [
     "defmt",
     "integrated-timers",
@@ -23,7 +23,7 @@ embassy-stm32 = { version = "0.1.0", features = [
     "exti",
 ] }
 cortex-m-rt = "0.7.1"
-critical-section = "1.1.1"
+cortex-m = { version = "0.7.6", features = ["critical-section-single-core"] }
 
 [patch.crates-io]
 embassy-time = { git = "https://github.com/embassy-rs/embassy" }
