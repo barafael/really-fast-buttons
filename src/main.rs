@@ -17,11 +17,12 @@ async fn main(_spawner: Spawner) {
     let p = embassy_stm32::init(Default::default());
     info!("Hello World!");
 
-    let pa0 = Input::new(p.PA0, Pull::Down);
+    let pa0 = Input::new(p.PA0, Pull::Up);
     let mut pa0 = ExtiInput::new(pa0, p.EXTI0);
 
     loop {
         pa0.wait_for_rising_edge().await;
         COUNTER.fetch_add(1, Ordering::Relaxed);
+        defmt::trace!("pa0 triggered");
     }
 }
