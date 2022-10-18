@@ -12,6 +12,7 @@ use {defmt_rtt as _, panic_probe as _};
 
 static COUNTER: AtomicU32 = AtomicU32::new(0);
 
+#[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     let p = embassy_stm32::init(Default::default());
 
