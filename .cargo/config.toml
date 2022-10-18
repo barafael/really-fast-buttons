@@ -1,11 +1,15 @@
 [target.thumbv7em-none-eabihf]
+runner = "probe-run --chip STM32F411CEUx"
 rustflags = [
   # --- KEEP existing `link-arg` flags ---
-  "-C", "link-arg=-Tlink.x",
-  "-C", "link-arg=--nmagic",
+  "-C",
+  "link-arg=-Tlink.x",
+  "-C",
+  "link-arg=--nmagic",
 
   # --- ADD following new flag ---
-  "-C", "link-arg=-Tdefmt.x",
+  "-C",
+  "link-arg=-Tdefmt.x",
 ]
 
 [build]
