@@ -104,6 +104,7 @@ mod app {
         )
     }
 
+    // TODO set writing handlers to higher priority
     #[idle(local = [tx, rx], shared = [counter])]
     fn idle(mut ctx: idle::Context) -> ! {
         // Consider using USB peripheral instead
