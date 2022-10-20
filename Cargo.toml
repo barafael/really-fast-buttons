@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+#rfb-proto = { path = "../RFB-proto" }
+rfb-proto = { git = "https://github.com/barafael/RFB-proto" }
 panic-probe = { version = "0.3.0" }
 embassy-executor = { version = "0.1.0", features = [
     "defmt",
@@ -24,6 +26,7 @@ embassy-stm32 = { version = "0.1.0", features = [
 ] }
 cortex-m-rt = "0.7.1"
 cortex-m = { version = "0.7.6", features = ["critical-section-single-core"] }
+embedded-io = "0.3.0"
 
 [patch.crates-io]
 embassy-time = { git = "https://github.com/embassy-rs/embassy" }
