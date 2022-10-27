@@ -6,6 +6,9 @@ pub use heapless::Vec;
 pub use postcard::from_bytes;
 pub use postcard::to_vec;
 
+#[cfg(feature = "actuator")]
+pub mod actuator;
+
 pub mod error;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Deserialize, Serialize, defmt::Format)]
