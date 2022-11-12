@@ -15,4 +15,8 @@ pub struct Args {
 #[derive(Debug, Parser)]
 pub enum Action {
     Read,
+    Generate {
+        rising_edges: u64,
+        period_picos: u64,
+    },
 }

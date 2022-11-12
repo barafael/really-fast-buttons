@@ -10,4 +10,8 @@ anyhow = "1.0.66"
 clap = "3"
 clap_derive = "3"
 linux-embedded-hal = "0.3.2"
-rfb-proto = { git = "https://github.com/barafael/RFB-proto" }
+#rfb-proto = { path = "../RFB-proto", features = ["sensor", "actuator"] }
+rfb-proto = { git = "https://github.com/barafael/RFB-proto", features = [
+    "sensor",
+    "actuator",
+] }
