@@ -3,6 +3,10 @@ name = "rfb-proto"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+actuator = []
+sensor = []
+
 [dependencies]
 heapless = "0.7.16"
 postcard = "0.7.3"
