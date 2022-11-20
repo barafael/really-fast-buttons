@@ -12,7 +12,9 @@ defmt-rtt = "0.3.2"
 panic-probe = { version = "0.3.0", features = ["print-defmt"] }
 cortex-m = "0.7.6"
 #rfb-proto = { path = "../RFB-proto" }
-rfb-proto = { git = "https://github.com/barafael/RFB-proto" }
+rfb-proto = { git = "https://github.com/barafael/RFB-proto", features = [
+    "sensor",
+] }
 
 [dependencies.stm32f4xx-hal]
 version = "0.13.2"
