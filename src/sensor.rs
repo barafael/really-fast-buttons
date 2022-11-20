@@ -18,7 +18,7 @@ mod test {
     #[test]
     fn request() {
         let request = Message::Request;
-        let output: Vec<u8, 9> = to_vec(&request).unwrap();
+        let output: Vec<u8, 1> = to_vec(&request).unwrap();
         let back: Message = from_bytes(output.deref()).unwrap();
         assert!(matches!(back, Message::Request));
     }
