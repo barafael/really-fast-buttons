@@ -19,7 +19,7 @@ use rtic::app;
 mod app {
     use core::fmt::Write;
     use core::sync::atomic::{AtomicUsize, Ordering};
-    use rfb_proto::Message;
+    use rfb_proto::SensorMessage;
     use stm32f4xx_hal::{
         block,
         gpio::{gpioa::PA0, gpioc::PC6, Alternate, Edge, Input, Output, Pin, PushPull},
@@ -114,13 +114,13 @@ mod app {
         loop {
             let byte = block!(ctx.local.rx.read()).unwrap();
             let byte = rfb_proto::from_bytes(&[byte]);
-            if let Ok(Message::Request) = byte {
+            if let Ok(SensorMessage::Request) = byte {
                 let count = ctx.shared.counter.lock(|c| {
                     let save = *c;
                     *c = 0;
                     save
                 });
-                let response = Message::Response(count as u64);
+                let response = SensorMessage::Response(count as u64);
                 let bytes: rfb_proto::Vec<u8, 9> = rfb_proto::to_vec(&response).unwrap();
                 for byte in bytes {
                     block!(ctx.local.tx.write(byte)).unwrap();
