@@ -3,7 +3,6 @@
 #![feature(type_alias_impl_trait)]
 
 use core::sync::atomic::{AtomicU32, Ordering};
-
 use embassy_executor::Spawner;
 use embassy_stm32::dma::NoDma;
 use embassy_stm32::exti::ExtiInput;
@@ -12,7 +11,7 @@ use embassy_stm32::interrupt::{self};
 use embassy_stm32::peripherals::{PA0, PA1, PA2};
 use embassy_stm32::usart::{BufferedUart, Config, State, Uart};
 use embedded_io::asynch::{BufRead, Write};
-use rfb_proto::Message;
+use rfb_proto::SensorMessage;
 use {defmt_rtt as _, panic_probe as _};
 
 static COUNTER: AtomicU32 = AtomicU32::new(0);
@@ -53,9 +52,9 @@ async fn main(spawner: Spawner) {
         let n = buf.len();
         let byte = rfb_proto::from_bytes(buf);
         rx.consume(n);
-        if let Ok(Message::Request) = byte {
+        if let Ok(SensorMessage::Request) = byte {
             let count = COUNTER.swap(0, Ordering::Acquire);
-            let response = Message::Response(count as u64);
+            let response = SensorMessage::Response(count as u64);
             let bytes: rfb_proto::Vec<u8, 9> = rfb_proto::to_vec(&response).unwrap();
             tx.write_all(&bytes).await.unwrap();
             tx.flush().await.unwrap();

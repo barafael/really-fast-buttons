@@ -939,7 +939,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a3f87b73ce11b1619a3c6332f45341e0047173771e8b8b73f87bfeefb7b56244"
 
 [[package]]
-name = "rfb-embassy-atomic"
+name = "rfb-embassy-tasks"
 version = "0.1.0"
 dependencies = [
  "cortex-m",
@@ -956,6 +956,7 @@ dependencies = [
 [[package]]
 name = "rfb-proto"
 version = "0.1.0"
+source = "git+https://github.com/barafael/RFB-proto#e9ef301b473c79e0384f86783d568d665aa87057"
 dependencies = [
  "defmt",
  "heapless",

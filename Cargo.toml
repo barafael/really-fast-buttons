@@ -1,11 +1,13 @@
 [package]
-name = "rfb-embassy-atomic"
+name = "rfb-embassy-tasks"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 #rfb-proto = { path = "../RFB-proto" }
-rfb-proto = { git = "https://github.com/barafael/RFB-proto" }
+rfb-proto = { git = "https://github.com/barafael/RFB-proto", features = [
+    "sensor",
+] }
 panic-probe = { version = "0.3.0" }
 embassy-executor = { version = "0.1.0", features = [
     "defmt",
