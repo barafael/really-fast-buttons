@@ -5,7 +5,7 @@ use clap::{Parser, ValueHint};
 #[derive(Debug, Parser)]
 pub struct Args {
     /// Path to serial port
-    #[clap(short, long, parse(from_os_str), value_hint = ValueHint::FilePath)]
+    #[clap(short, long, parse(from_os_str), default_value = "/dev/ttyUSB0", value_hint = ValueHint::FilePath)]
     pub port: PathBuf,
 
     #[clap(subcommand)]
