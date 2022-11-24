@@ -1,5 +1,5 @@
 use klask::Settings;
-use rfb_ui::process;
+use rfb_client::process;
 
 fn main() -> anyhow::Result<()> {
     klask::run_derived(Settings::default(), |a| {
