@@ -18,6 +18,7 @@ cortex-m = "0.7.6"
 rfb-proto = { git = "https://github.com/barafael/RFB-proto", features = [
     "sensor",
 ] }
+postcard = "1.0.2"
 
 [dependencies.stm32f4xx-hal]
 version = "0.13.2"
