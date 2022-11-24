@@ -99,21 +99,19 @@ fn main() -> ! {
 #[interrupt]
 fn USART1() {
     defmt::trace!("USART1 interrupt fired");
-    unsafe {
-        let serial = SERIAL.as_mut().unwrap();
+    let serial = unsafe { SERIAL.as_mut().unwrap() };
 
-        let byte = serial.read().unwrap();
-        if byte == 0 {
-            let bytes: [u8; 4] = COUNTER.swap(0, Ordering::SeqCst).to_le_bytes();
-            block!(serial.write(1)).unwrap();
-            block!(serial.write(bytes[0])).unwrap();
-            block!(serial.write(bytes[1])).unwrap();
-            block!(serial.write(bytes[2])).unwrap();
-            block!(serial.write(bytes[3])).unwrap();
-            block!(serial.write(0)).unwrap();
-            block!(serial.write(0)).unwrap();
-            block!(serial.write(0)).unwrap();
-            block!(serial.write(0)).unwrap();
-        }
-    };
+    let byte = serial.read().unwrap();
+    if byte == 0 {
+        let bytes: [u8; 4] = COUNTER.swap(0, Ordering::SeqCst).to_le_bytes();
+        block!(serial.write(1)).unwrap();
+        block!(serial.write(bytes[0])).unwrap();
+        block!(serial.write(bytes[1])).unwrap();
+        block!(serial.write(bytes[2])).unwrap();
+        block!(serial.write(bytes[3])).unwrap();
+        block!(serial.write(0)).unwrap();
+        block!(serial.write(0)).unwrap();
+        block!(serial.write(0)).unwrap();
+        block!(serial.write(0)).unwrap();
+    }
 }
