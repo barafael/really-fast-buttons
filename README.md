@@ -1,6 +1,6 @@
 # RFB-hal-blocking
 
-Polls PA0, PA1, PA2, `unsafe`ly counting up a global,
+Polls PA0, PA1, PA2, incrementing a global atomic,
 which is read out in the serial RXNE interrupt.
 
 Ironically, includes an interrupt-driven serial port implementation.
