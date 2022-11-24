@@ -1,24 +1,20 @@
-//! Demonstrate the use of a blocking `Delay` using TIM5 general-purpose timer.
-
 #![allow(clippy::empty_loop)]
 #![no_main]
 #![no_std]
 
 use cortex_m::peripheral::NVIC;
+use cortex_m_rt::entry;
 use defmt_rtt as _;
-use hal::{
-    gpio::{Alternate, Pin},
-    interrupt,
-    pac::USART1,
-    serial::{Event, Serial},
-};
 use nb::block;
 use panic_probe as _;
-
-use cortex_m_rt::entry;
-use stm32f4xx_hal as hal;
-
-use crate::hal::{pac, prelude::*};
+use stm32f4xx_hal::{
+    self as hal,
+    gpio::{Alternate, Pin},
+    interrupt,
+    pac::{self, USART1},
+    prelude::*,
+    serial::{Event, Serial},
+};
 
 pub type Port = Serial<USART1, (Pin<'A', 9, Alternate<7>>, Pin<'A', 10, Alternate<7>>), u8>;
 
@@ -32,6 +28,8 @@ fn main() -> ! {
         pac::Peripherals::take(),
         cortex_m::peripheral::Peripherals::take(),
     ) {
+        defmt::println!("init");
+
         let rcc = dp.RCC.constrain();
 
         // Set up the system clock. We want to run at 48MHz for this one.
@@ -42,22 +40,21 @@ fn main() -> ! {
         let tx_pin = gpioa.pa9.into_alternate();
         let rx_pin = gpioa.pa10.into_alternate();
 
-        // configure serial
+        // Configure serial
         let mut serial = dp
             .USART1
             .serial((tx_pin, rx_pin), 9600.bps(), &clocks)
             .unwrap();
 
         serial.listen(Event::Rxne);
+
         unsafe {
+            // First, set instance
+            let _ = SERIAL.insert(serial);
+            // After that, enable USART1 interrupt
             NVIC::unmask(hal::interrupt::USART1);
         };
 
-        unsafe {
-            let _ = SERIAL.insert(serial);
-        }
-
-        // Set up the LED. On the Mini-F4 it's connected to pin PC13.
         let gpioc = dp.GPIOC.split();
         let _led = gpioc.pc13.into_push_pull_output();
 
