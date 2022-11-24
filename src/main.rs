@@ -2,6 +2,7 @@
 #![no_main]
 #![no_std]
 
+use core::sync::atomic::{AtomicUsize, Ordering};
 use cortex_m::peripheral::NVIC;
 use cortex_m_rt::entry;
 use defmt_rtt as _;
@@ -20,7 +21,7 @@ pub type Port = Serial<USART1, (Pin<'A', 9, Alternate<7>>, Pin<'A', 10, Alternat
 
 static mut SERIAL: Option<Port> = None;
 
-static mut COUNTER: usize = 0;
+static COUNTER: AtomicUsize = AtomicUsize::new(0);
 
 #[entry]
 fn main() -> ! {
@@ -72,9 +73,7 @@ fn main() -> ! {
             } else if !pa0_handled {
                 defmt::trace!("pa0 low");
                 pa0_handled = true;
-                unsafe {
-                    COUNTER += 1;
-                }
+                COUNTER.fetch_add(1, Ordering::SeqCst);
             }
 
             if pa1.is_high() {
@@ -82,9 +81,7 @@ fn main() -> ! {
             } else if !pa1_handled {
                 defmt::trace!("pa1 low");
                 pa1_handled = true;
-                unsafe {
-                    COUNTER += 1;
-                }
+                COUNTER.fetch_add(1, Ordering::SeqCst);
             }
 
             if pa2.is_high() {
@@ -92,9 +89,7 @@ fn main() -> ! {
             } else if !pa2_handled {
                 defmt::trace!("pa2 low");
                 pa2_handled = true;
-                unsafe {
-                    COUNTER += 1;
-                }
+                COUNTER.fetch_add(1, Ordering::SeqCst);
             }
         }
     }
@@ -109,7 +104,7 @@ fn USART1() {
 
         let byte = serial.read().unwrap();
         if byte == 0 {
-            let bytes: [u8; 4] = COUNTER.to_le_bytes();
+            let bytes: [u8; 4] = COUNTER.swap(0, Ordering::SeqCst).to_le_bytes();
             block!(serial.write(1)).unwrap();
             block!(serial.write(bytes[0])).unwrap();
             block!(serial.write(bytes[1])).unwrap();
@@ -120,6 +115,5 @@ fn USART1() {
             block!(serial.write(0)).unwrap();
             block!(serial.write(0)).unwrap();
         }
-        COUNTER = 0;
     };
 }
