@@ -60,6 +60,10 @@ fn main() -> ! {
         let gpioc = dp.GPIOC.split();
         let _led = gpioc.pc13.into_push_pull_output();
 
+        let _ = gpioa.pa0.internal_pull_up(true).into_input();
+        let _ = gpioa.pa1.internal_pull_up(true).into_input();
+        let _ = gpioa.pa2.internal_pull_up(true).into_input();
+
         let mut pa0_handled = false;
         let mut pa1_handled = false;
         let mut pa2_handled = false;
