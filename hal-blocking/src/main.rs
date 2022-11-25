@@ -72,7 +72,7 @@ fn main() -> ! {
             if pa0.is_high() {
                 pa0_handled = false;
             } else if !pa0_handled {
-                defmt::trace!("pa0 low");
+                defmt::trace!("PA0 edge");
                 pa0_handled = true;
                 COUNTER.fetch_add(1, Ordering::SeqCst);
             }
@@ -80,7 +80,7 @@ fn main() -> ! {
             if pa1.is_high() {
                 pa1_handled = false;
             } else if !pa1_handled {
-                defmt::trace!("pa1 low");
+                defmt::trace!("PA1 edge");
                 pa1_handled = true;
                 COUNTER.fetch_add(1, Ordering::SeqCst);
             }
@@ -88,7 +88,7 @@ fn main() -> ! {
             if pa2.is_high() {
                 pa2_handled = false;
             } else if !pa2_handled {
-                defmt::trace!("pa2 low");
+                defmt::trace!("PA2 edge");
                 pa2_handled = true;
                 COUNTER.fetch_add(1, Ordering::SeqCst);
             }
@@ -99,7 +99,7 @@ fn main() -> ! {
 
 #[interrupt]
 fn USART1() {
-    defmt::trace!("USART1 interrupt fired");
+    defmt::trace!("USART1 active");
     let serial = unsafe { SERIAL.as_mut().unwrap() };
 
     let byte = serial.read().unwrap();

@@ -92,7 +92,7 @@ fn main() -> ! {
 
 #[interrupt]
 fn USART1() {
-    defmt::trace!("USART1 interrupt fired");
+    defmt::trace!("USART1 active");
     let serial = unsafe { SERIAL.as_mut().unwrap() };
 
     let byte = serial.read().unwrap();
@@ -110,20 +110,20 @@ fn USART1() {
 #[interrupt]
 fn EXTI0() {
     unsafe { (*EXTI::ptr()).pr.write(|w| w.bits(1 << 0)) };
-    defmt::trace!("EXTI0 interrupt fired");
+    defmt::trace!("PA0 edge");
     COUNTER.fetch_add(1, Ordering::SeqCst);
 }
 
 #[interrupt]
 fn EXTI1() {
     unsafe { (*EXTI::ptr()).pr.write(|w| w.bits(1 << 1)) };
-    defmt::trace!("EXTI1 interrupt fired");
+    defmt::trace!("PA1 edge");
     COUNTER.fetch_add(1, Ordering::SeqCst);
 }
 
 #[interrupt]
 fn EXTI2() {
     unsafe { (*EXTI::ptr()).pr.write(|w| w.bits(1 << 2)) };
-    defmt::trace!("EXTI2 interrupt fired");
+    defmt::trace!("PA2 edge");
     COUNTER.fetch_add(1, Ordering::SeqCst);
 }

@@ -112,6 +112,7 @@ mod app {
         // https://github.com/stm32-rs/stm32f4xx-hal/blob/master/examples/usb_serial_irq.rs
         loop {
             let byte = block!(ctx.local.rx.read()).unwrap();
+            defmt::trace!("USART1 active");
             let byte = rfb_proto::from_bytes(&[byte]);
             if let Ok(SensorRequest::GetCount) = byte {
                 let count = COUNTER.swap(0, Ordering::Acquire);
@@ -127,21 +128,21 @@ mod app {
     #[task(binds = EXTI0, local = [pa0])]
     fn on_exti0(ctx: on_exti0::Context) {
         ctx.local.pa0.clear_interrupt_pending_bit();
-        defmt::trace!("pa0 triggered");
+        defmt::trace!("PA0 edge");
         COUNTER.fetch_add(1, Ordering::SeqCst);
     }
 
     #[task(binds = EXTI1, local = [pa1])]
     fn on_exti1(ctx: on_exti1::Context) {
         ctx.local.pa1.clear_interrupt_pending_bit();
-        defmt::trace!("pa1 triggered");
+        defmt::trace!("PA1 edge");
         COUNTER.fetch_add(1, Ordering::SeqCst);
     }
 
     #[task(binds = EXTI2, local = [pa2])]
     fn on_exti2(ctx: on_exti2::Context) {
         ctx.local.pa2.clear_interrupt_pending_bit();
-        defmt::trace!("pa2 triggered");
+        defmt::trace!("PA2 edge");
         COUNTER.fetch_add(1, Ordering::SeqCst);
     }
 }

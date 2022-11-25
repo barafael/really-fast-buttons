@@ -45,12 +45,15 @@ async fn main(spawner: Spawner) {
         let f = embassy_futures::select::select3(zero, one, two).await;
         match f {
             Either3::First(_) => {
+                defmt::trace!("PA0 edge");
                 COUNTER.fetch_add(1, Ordering::Relaxed);
             }
             Either3::Second(_) => {
+                defmt::trace!("PA1 edge");
                 COUNTER.fetch_add(1, Ordering::Relaxed);
             }
             Either3::Third(_) => {
+                defmt::trace!("PA2 edge");
                 COUNTER.fetch_add(1, Ordering::Relaxed);
             }
         }
@@ -71,6 +74,7 @@ async fn monitor_usart(usart: peripherals::USART1, pa10: peripherals::PA10, pa9:
     let (mut rx, mut tx) = buf_usart.split();
     loop {
         let buf = rx.fill_buf().await.unwrap();
+        defmt::trace!("USART1 active");
         let n = buf.len();
         let byte = rfb_proto::from_bytes(buf);
         rx.consume(n);

@@ -49,6 +49,7 @@ async fn main(spawner: Spawner) {
     let (mut rx, mut tx) = buf_usart.split();
     loop {
         let buf = rx.fill_buf().await.unwrap();
+        defmt::trace!("USART1 active");
         let n = buf.len();
         let byte = rfb_proto::from_bytes(buf);
         rx.consume(n);
@@ -67,7 +68,7 @@ async fn monitor_pa0(mut pa0: ExtiInput<'static, PA0>) {
     loop {
         pa0.wait_for_any_edge().await;
         COUNTER.fetch_add(1, Ordering::Acquire);
-        defmt::println!("{}", COUNTER.load(Ordering::SeqCst));
+        defmt::trace!("PA0 edge");
     }
 }
 
@@ -76,6 +77,7 @@ async fn monitor_pa1(mut pa1: ExtiInput<'static, PA1>) {
     loop {
         pa1.wait_for_any_edge().await;
         COUNTER.fetch_add(1, Ordering::Acquire);
+        defmt::trace!("PA1 edge");
     }
 }
 
@@ -84,5 +86,6 @@ async fn monitor_pa2(mut pa2: ExtiInput<'static, PA2>) {
     loop {
         pa2.wait_for_any_edge().await;
         COUNTER.fetch_add(1, Ordering::Acquire);
+        defmt::trace!("PA2 edge");
     }
 }
