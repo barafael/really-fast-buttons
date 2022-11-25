@@ -80,7 +80,7 @@ mod app {
         let tx_pin = gpioa.pa9.into_alternate();
         let rx_pin = gpioa.pa10.into_alternate();
 
-        // configure serial
+        // Configure serial
         let serial = ctx
             .device
             .USART1
@@ -106,10 +106,6 @@ mod app {
 
     #[idle(local = [tx, rx])]
     fn idle(ctx: idle::Context) -> ! {
-        // Consider using USB peripheral instead
-        // https://github.com/stm32-rs/stm32f4xx-hal/blob/master/examples/usb_serial_poll.rs
-        // or
-        // https://github.com/stm32-rs/stm32f4xx-hal/blob/master/examples/usb_serial_irq.rs
         loop {
             let byte = block!(ctx.local.rx.read()).unwrap();
             defmt::trace!("USART1 active");

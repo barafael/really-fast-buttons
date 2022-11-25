@@ -15,6 +15,8 @@ fn panic() -> ! {
 use defmt_rtt as _;
 use rtic::app;
 
+const ID: &str = env!("CARGO_PKG_NAME");
+
 #[app(device = stm32f4xx_hal::pac, peripherals = true)]
 mod app {
     use core::fmt::Write;
@@ -28,6 +30,8 @@ mod app {
         serial::{Rx, Serial, Tx},
     };
     use systick_monotonic::{fugit::Duration, Systick};
+
+    use crate::ID;
 
     #[shared]
     struct Shared {
@@ -48,7 +52,7 @@ mod app {
 
     #[init]
     fn init(mut ctx: init::Context) -> (Shared, Local, init::Monotonics) {
-        defmt::println!("init");
+        defmt::println!("init: {}", crate::ID);
 
         let rcc = ctx.device.RCC.constrain();
         let clocks = rcc.cfgr.sysclk(48.MHz()).freeze();
@@ -80,7 +84,7 @@ mod app {
         let tx_pin = gpioa.pa9.into_alternate();
         let rx_pin = gpioa.pa10.into_alternate();
 
-        // configure serial
+        // Configure serial
         let serial = ctx
             .device
             .USART1
@@ -104,28 +108,34 @@ mod app {
         )
     }
 
-    // TODO set writing handlers to higher priority
     #[idle(local = [tx, rx], shared = [counter])]
     fn idle(mut ctx: idle::Context) -> ! {
-        // Consider using USB peripheral instead
-        // https://github.com/stm32-rs/stm32f4xx-hal/blob/master/examples/usb_serial_poll.rs
-        // or
-        // https://github.com/stm32-rs/stm32f4xx-hal/blob/master/examples/usb_serial_irq.rs
         loop {
             let byte = block!(ctx.local.rx.read()).unwrap();
             defmt::trace!("USART1 active");
-            let byte = rfb_proto::from_bytes(&[byte]);
-            if let Ok(SensorRequest::GetCount) = byte {
-                let count = ctx.shared.counter.lock(|c| {
-                    let save = *c;
-                    *c = 0;
-                    save
-                });
-                let response = SensorResponse::Count(count as u32);
-                let bytes: rfb_proto::Vec<u8, 9> = rfb_proto::to_vec(&response).unwrap();
-                for byte in bytes {
-                    block!(ctx.local.tx.write(byte)).unwrap();
+            let request = rfb_proto::from_bytes(&[byte]);
+            match request {
+                Ok(SensorRequest::GetCount) => {
+                    let count = ctx.shared.counter.lock(|c| {
+                        let save = *c;
+                        *c = 0;
+                        save
+                    });
+                    let response = SensorResponse::Count(count as u32);
+                    let bytes: rfb_proto::Vec<u8, 9> = rfb_proto::to_vec(&response).unwrap();
+                    for byte in bytes {
+                        block!(ctx.local.tx.write(byte)).unwrap();
+                    }
                 }
+                Ok(SensorRequest::WhoAreYou) => {
+                    let response = SensorResponse::IAm(ID);
+                    let bytes: rfb_proto::Vec<u8, { ID.len() + 2 }> =
+                        rfb_proto::to_vec(&response).unwrap();
+                    for byte in bytes.iter().take(20) {
+                        block!(ctx.local.tx.write(*byte)).unwrap();
+                    }
+                }
+                Err(e) => defmt::error!("Not a request {}", e),
             }
         }
     }
