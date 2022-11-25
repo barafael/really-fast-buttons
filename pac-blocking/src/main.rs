@@ -8,7 +8,7 @@ use cortex_m_rt::entry;
 use defmt_rtt as _;
 use nb::block;
 use panic_probe as _;
-use rfb_proto::SensorMessage;
+use rfb_proto::{SensorRequest, SensorResponse};
 use stm32f4xx_hal::{
     self as hal,
     gpio::{Alternate, Pin},
@@ -105,9 +105,9 @@ fn USART1() {
 
     let byte = serial.read().unwrap();
     let request = rfb_proto::from_bytes(&[byte]);
-    if let Ok(SensorMessage::Request) = request {
+    if let Ok(SensorRequest::GetCount) = request {
         let count = COUNTER.swap(0, Ordering::SeqCst);
-        let response = SensorMessage::Response(count as u64);
+        let response = SensorResponse::Count(count as u32);
         let bytes: rfb_proto::Vec<u8, 9> = rfb_proto::to_vec(&response).unwrap();
         for byte in bytes {
             block!(serial.write(byte)).unwrap();

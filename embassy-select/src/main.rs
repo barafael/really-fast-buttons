@@ -12,7 +12,7 @@ use embassy_stm32::interrupt;
 use embassy_stm32::peripherals;
 use embassy_stm32::usart::{BufferedUart, Config, State, Uart};
 use embedded_io::asynch::{BufRead, Write};
-use rfb_proto::SensorMessage;
+use rfb_proto::{SensorRequest, SensorResponse};
 use {defmt_rtt as _, panic_probe as _};
 
 static COUNTER: AtomicU32 = AtomicU32::new(0);
@@ -74,9 +74,9 @@ async fn monitor_usart(usart: peripherals::USART1, pa10: peripherals::PA10, pa9:
         let n = buf.len();
         let byte = rfb_proto::from_bytes(buf);
         rx.consume(n);
-        if let Ok(SensorMessage::Request) = byte {
+        if let Ok(SensorRequest::GetCount) = byte {
             let count = COUNTER.swap(0, Ordering::Acquire);
-            let response = SensorMessage::Response(count as u64);
+            let response = SensorResponse::Count(count as u32);
             let bytes: rfb_proto::Vec<u8, 9> = rfb_proto::to_vec(&response).unwrap();
             tx.write_all(&bytes).await.unwrap();
             tx.flush().await.unwrap();

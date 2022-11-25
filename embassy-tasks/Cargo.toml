@@ -4,8 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-#rfb-proto = { path = "../RFB-proto" }
-rfb-proto = { git = "https://github.com/barafael/RFB-proto", features = [
+rfb-proto = { path = "../proto", features = [
     "sensor",
 ] }
 panic-probe = { version = "0.3.0" }
