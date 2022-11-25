@@ -5,13 +5,13 @@ edition = "2021"
 default-run = "gui"
 
 [dependencies]
-klask = { version = "1.0.0", git = "https://github.com/barafael/klask", branch = "stdout-update" }
+klask = { git = "https://github.com/MichalGniadek/klask" }
 anyhow = "1.0.66"
 clap = "3"
 clap_derive = "3"
 linux-embedded-hal = "0.3.2"
 #rfb-proto = { path = "../RFB-proto", features = ["sensor", "actuator"] }
-rfb-proto = { git = "https://github.com/barafael/RFB-proto", features = [
+rfb-proto = { path = "../proto", features = [
     "sensor",
     "actuator",
 ] }

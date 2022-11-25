@@ -1,5 +1,5 @@
 #[cfg(feature = "sensor")]
-use crate::SensorMessage;
+use crate::SensorRequest;
 
 use snafu::prelude::*;
 
@@ -7,5 +7,5 @@ use snafu::prelude::*;
 pub enum Error {
     #[cfg(feature = "sensor")]
     #[snafu(display("Failed to write item {cfg:?}"))]
-    Msg { cfg: SensorMessage },
+    Msg { cfg: SensorRequest },
 }

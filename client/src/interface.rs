@@ -14,9 +14,10 @@ pub struct Args {
 
 #[derive(Debug, Parser)]
 pub enum Action {
-    Read,
+    GetCount,
     Generate {
-        rising_edges: u64,
+        rising_edges: u32,
         period_picos: u64,
     },
+    GetDeviceId,
 }
