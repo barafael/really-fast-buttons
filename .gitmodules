@@ -1,0 +1,6 @@
+[submodule "freertos-kernel"]
+	path = freertos-tasks/freertos-kernel
+	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git
+[submodule "freertos-addons"]
+	path = freertos-tasks/freertos-addons
+	url = https://github.com/michaelbecker/freertos-addons.git
