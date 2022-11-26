@@ -6,18 +6,19 @@ use core::sync::atomic::{AtomicUsize, Ordering};
 use cortex_m::peripheral::NVIC;
 use cortex_m_rt::entry;
 use defmt_rtt as _;
-use hal::{gpio::Edge, pac::EXTI};
 use nb::block;
 use panic_probe as _;
 use rfb_proto::{SensorRequest, SensorResponse};
 use stm32f4xx_hal::{
     self as hal,
-    gpio::{Alternate, Pin},
+    gpio::{Alternate, Edge, Pin},
     interrupt,
-    pac::{self, USART1},
+    pac::{self, EXTI, USART1},
     prelude::*,
     serial::{Event, Serial},
 };
+
+const ID: &str = env!("CARGO_PKG_NAME");
 
 pub type Port = Serial<USART1, (Pin<'A', 9, Alternate<7>>, Pin<'A', 10, Alternate<7>>), u8>;
 
@@ -31,7 +32,7 @@ fn main() -> ! {
         pac::Peripherals::take(),
         cortex_m::peripheral::Peripherals::take(),
     ) {
-        defmt::println!("init");
+        defmt::println!("init: {}", crate::ID);
 
         let rcc = dp.RCC.constrain();
         let mut syscfg = dp.SYSCFG.constrain();

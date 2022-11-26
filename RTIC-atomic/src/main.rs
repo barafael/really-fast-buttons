@@ -15,6 +15,8 @@ fn panic() -> ! {
 use defmt_rtt as _;
 use rtic::app;
 
+const ID: &str = env!("CARGO_PKG_NAME");
+
 #[app(device = stm32f4xx_hal::pac, peripherals = true)]
 mod app {
     use core::fmt::Write;
@@ -48,7 +50,7 @@ mod app {
 
     #[init]
     fn init(mut ctx: init::Context) -> (Shared, Local, init::Monotonics) {
-        defmt::println!("init");
+        defmt::println!("init: {}", crate::ID);
 
         let rcc = ctx.device.RCC.constrain();
         let clocks = rcc.cfgr.sysclk(48.MHz()).freeze();

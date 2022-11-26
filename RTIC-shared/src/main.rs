@@ -19,8 +19,10 @@ const ID: &str = env!("CARGO_PKG_NAME");
 
 #[app(device = stm32f4xx_hal::pac, peripherals = true)]
 mod app {
-    use core::fmt::Write;
-    use core::sync::atomic::{AtomicUsize, Ordering};
+    use core::{
+        fmt::Write,
+        sync::atomic::{AtomicUsize, Ordering},
+    };
     use rfb_proto::{SensorRequest, SensorResponse};
     use stm32f4xx_hal::{
         block,
@@ -131,8 +133,8 @@ mod app {
                     let response = SensorResponse::IAm(ID);
                     let bytes: rfb_proto::Vec<u8, { ID.len() + 2 }> =
                         rfb_proto::to_vec(&response).unwrap();
-                    for byte in bytes.iter().take(20) {
-                        block!(ctx.local.tx.write(*byte)).unwrap();
+                    for byte in bytes {
+                        block!(ctx.local.tx.write(byte)).unwrap();
                     }
                 }
                 Err(e) => defmt::error!("Not a request {}", e),

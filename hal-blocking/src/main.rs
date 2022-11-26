@@ -24,13 +24,15 @@ static mut SERIAL: Option<Port> = None;
 
 static COUNTER: AtomicUsize = AtomicUsize::new(0);
 
+const ID: &str = env!("CARGO_PKG_NAME");
+
 #[entry]
 fn main() -> ! {
     if let (Some(dp), Some(_cp)) = (
         pac::Peripherals::take(),
         cortex_m::peripheral::Peripherals::take(),
     ) {
-        defmt::println!("init");
+        defmt::println!("init: {}", crate::ID);
 
         let rcc = dp.RCC.constrain();
 
