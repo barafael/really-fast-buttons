@@ -129,14 +129,7 @@ mod app {
                         block!(ctx.local.tx.write(byte)).unwrap();
                     }
                 }
-                Ok(SensorRequest::WhoAreYou) => {
-                    let response = SensorResponse::IAm(ID);
-                    let bytes: rfb_proto::Vec<u8, { ID.len() + 2 }> =
-                        rfb_proto::to_vec(&response).unwrap();
-                    for byte in bytes {
-                        block!(ctx.local.tx.write(byte)).unwrap();
-                    }
-                }
+                Ok(SensorRequest::WhoAreYou) => defmt::warn!("WhoAreYou not implemented yet"),
                 Err(e) => defmt::error!("Not a request {}", e),
             }
         }

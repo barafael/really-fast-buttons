@@ -86,7 +86,7 @@ pub fn process(args: Args) -> anyhow::Result<()> {
                 .context("Receiving response failed")?;
             let response: SensorResponse = from_bytes(&response).expect("Parsing response failed");
             if let SensorResponse::IAm(str) = response {
-                println!("Id = {str}");
+                println!("Id: {str}");
             } else {
                 eprintln!("Unexpected response: {response:?}");
             }
