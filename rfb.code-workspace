@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"path": "client"
+		},
+		{
+			"path": "embassy-select"
+		},
+		{
+			"path": "embassy-tasks"
+		},
+		{
+			"path": "hal-blocking"
+		},
+		{
+			"path": "pac-blocking"
+		},
+		{
+			"path": "proto"
+		},
+		{
+			"path": "raw-interrupts"
+		},
+		{
+			"path": "RTIC-atomic"
+		},
+		{
+			"path": "RTIC-shared"
+		}
+	]
+}
