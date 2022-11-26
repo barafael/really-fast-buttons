@@ -124,7 +124,7 @@ mod app {
                         save
                     });
                     let response = SensorResponse::Count(count as u32);
-                    let bytes: rfb_proto::Vec<u8, 9> = rfb_proto::to_vec(&response).unwrap();
+                    let bytes: rfb_proto::Vec<u8, 5> = rfb_proto::to_vec(&response).unwrap();
                     for byte in bytes {
                         block!(ctx.local.tx.write(byte)).unwrap();
                     }

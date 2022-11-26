@@ -1,3 +1,4 @@
+use postcard::fixint;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Deserialize, Serialize, defmt::Format)]
@@ -10,6 +11,7 @@ pub enum Request {
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Deserialize, Serialize, defmt::Format)]
 #[repr(C)]
 pub enum Response<'a> {
+    #[serde(with = "fixint::le")]
     Count(u32),
     IAm(&'a str),
 }
@@ -31,11 +33,19 @@ mod test {
     }
 
     #[test]
-    fn response() {
-        let response = Response::Count(84);
-        let output: Vec<u8, 9> = to_vec(&response).unwrap();
+    fn max_count() {
+        let response = Response::Count(u32::MAX);
+        let output: Vec<u8, 5> = to_vec(&response).unwrap();
         let back: Response = from_bytes(output.deref()).unwrap();
-        assert!(matches!(back, Response::Count(n) if n == 84));
+        assert!(matches!(back, Response::Count(n) if n == u32::MAX));
+    }
+
+    #[test]
+    fn min_count() {
+        let response = Response::Count(u32::MIN);
+        let output: Vec<u8, 5> = to_vec(&response).unwrap();
+        let back: Response = from_bytes(output.deref()).unwrap();
+        assert!(matches!(back, Response::Count(n) if n == u32::MIN));
     }
 
     #[test]

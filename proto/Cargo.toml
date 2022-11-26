@@ -9,7 +9,9 @@ sensor = []
 
 [dependencies]
 heapless = "0.7.16"
-postcard = { version = "0.7.3", features = ["use-defmt"] }
+postcard = { git = "https://github.com/jamesmunns/postcard", features = [
+    "use-defmt",
+] }
 serde = { version = "1", default-features = false, features = ["derive"] }
 snafu = { version = "0.7.2", features = [
     "rust_1_46",

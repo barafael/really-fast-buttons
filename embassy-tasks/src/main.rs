@@ -63,7 +63,7 @@ async fn main(spawner: Spawner) {
         if let Ok(SensorRequest::GetCount) = byte {
             let count = COUNTER.swap(0, Ordering::Acquire);
             let response = SensorResponse::Count(count as u32);
-            let bytes: rfb_proto::Vec<u8, 9> = rfb_proto::to_vec(&response).unwrap();
+            let bytes: rfb_proto::Vec<u8, 5> = rfb_proto::to_vec(&response).unwrap();
             tx.write_all(&bytes).await.unwrap();
             tx.flush().await.unwrap();
         }

@@ -30,7 +30,7 @@ pub fn process(args: Args) -> anyhow::Result<()> {
             let request = SensorRequest::GetCount;
             let bytes: rfb_proto::Vec<u8, 1> = to_vec(&request).unwrap();
             port.write_all(&bytes).context("Request failed")?;
-            let mut response = [0u8; 9];
+            let mut response = [0u8; 5];
             port.read_exact(&mut response)
                 .context("Receiving response failed")?;
             let response: SensorResponse = from_bytes(&response).expect("Parsing response failed");
