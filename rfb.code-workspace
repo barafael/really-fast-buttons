@@ -26,6 +26,9 @@
 		},
 		{
 			"path": "RTIC-shared"
+		},
+		{
+			"path": "freertos-tasks"
 		}
 	]
 }
