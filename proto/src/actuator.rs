@@ -18,7 +18,6 @@ pub enum Response {
     StartedGenerating,
     FailedGenerating,
     FinishedGenerating,
-    IAm([u8; 20]),
 }
 
 #[cfg(all(test, feature = "actuator"))]

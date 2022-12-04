@@ -1,7 +1,10 @@
-use std::io::{Read, Write};
+use std::{
+    io::{Read, Write},
+    path::Path,
+};
 
 use anyhow::Context;
-use interface::{Action, Args};
+use arguments::{Action, Args};
 use linux_embedded_hal::{
     serial_core::{BaudRate, CharSize, FlowControl, Parity, PortSettings, SerialPort, StopBits},
     serial_unix::TTYPort,
@@ -10,7 +13,7 @@ use rfb_proto::{
     from_bytes, to_vec, ActuatorRequest, ActuatorResponse, SensorRequest, SensorResponse,
 };
 
-pub mod interface;
+pub mod arguments;
 
 const SETTINGS: PortSettings = PortSettings {
     baud_rate: BaudRate::Baud9600,
@@ -20,30 +23,55 @@ const SETTINGS: PortSettings = PortSettings {
     flow_control: FlowControl::FlowNone,
 };
 
-pub fn process(args: Args) -> anyhow::Result<()> {
-    let mut port = TTYPort::open(&args.port).context("Failed to open tty port")?;
+fn get_port(path: impl AsRef<Path>) -> anyhow::Result<TTYPort> {
+    let mut port = TTYPort::open(path.as_ref()).context("Failed to open tty port")?;
     port.configure(&SETTINGS)
-        .expect("Failed to configure serial port");
+        .context("Failed to configure serial port")?;
+    Ok(port)
+}
 
+fn get_device_id(port: &mut TTYPort) -> anyhow::Result<String> {
+    let request = SensorRequest::WhoAreYou;
+    let bytes: rfb_proto::Vec<u8, 1> = to_vec(&request).unwrap();
+    port.write_all(&bytes).context("Request failed")?;
+    let mut response = [0u8; 21];
+    port.read_exact(&mut response)
+        .context("Receiving response failed")?;
+    let response: SensorResponse = from_bytes(&response).expect("Parsing response failed");
+    if let SensorResponse::IAm(str) = response {
+        Ok(str.to_string())
+    } else {
+        Err(anyhow::anyhow!("Unexpected response"))
+    }
+}
+
+pub fn process(args: Args) -> anyhow::Result<()> {
     match args.action {
-        Action::GetCount => {
-            let request = SensorRequest::GetCount;
-            let bytes: rfb_proto::Vec<u8, 1> = to_vec(&request).unwrap();
-            port.write_all(&bytes).context("Request failed")?;
-            let mut response = [0u8; 5];
-            port.read_exact(&mut response)
-                .context("Receiving response failed")?;
-            let response: SensorResponse = from_bytes(&response).expect("Parsing response failed");
-            if let SensorResponse::Count(n) = response {
-                println!("n = {n}");
-            } else {
-                eprintln!("Unexpected response: {response:?}");
+        Action::GetCount { port: ports } => {
+            for port in ports {
+                let mut port = get_port(&port)?;
+                let id = get_device_id(&mut port)?;
+                let request = SensorRequest::GetCount;
+                let bytes: rfb_proto::Vec<u8, 1> = to_vec(&request).unwrap();
+                port.write_all(&bytes).context("Request failed")?;
+                let mut response = [0u8; 5];
+                port.read_exact(&mut response)
+                    .context("Receiving response failed")?;
+                let response: SensorResponse =
+                    from_bytes(&response).expect("Parsing response failed");
+                if let SensorResponse::Count(n) = response {
+                    println!("id {id}: {n}");
+                } else {
+                    eprintln!("Unexpected response: {response:?}");
+                }
             }
         }
         Action::Generate {
+            port,
             rising_edges,
             period_picos,
         } => {
+            let mut port = get_port(&port)?;
             let request = ActuatorRequest::Generate {
                 rising_edges,
                 period_picos,
@@ -71,24 +99,7 @@ pub fn process(args: Args) -> anyhow::Result<()> {
                         println!("Finished Generating");
                         break;
                     }
-                    ActuatorResponse::IAm(_s) => {
-                        return Err(anyhow::anyhow!("Unexpected response"));
-                    }
                 }
-            }
-        }
-        Action::GetDeviceId => {
-            let request = SensorRequest::WhoAreYou;
-            let bytes: rfb_proto::Vec<u8, 1> = to_vec(&request).unwrap();
-            port.write_all(&bytes).context("Request failed")?;
-            let mut response = [0u8; 21];
-            port.read_exact(&mut response)
-                .context("Receiving response failed")?;
-            let response: SensorResponse = from_bytes(&response).expect("Parsing response failed");
-            if let SensorResponse::IAm(str) = response {
-                println!("Id: {str}");
-            } else {
-                eprintln!("Unexpected response: {response:?}");
             }
         }
     }
