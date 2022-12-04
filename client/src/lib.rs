@@ -1,9 +1,4 @@
-use std::{
-    io::{Read, Write},
-    path::Path,
-};
-
-use anyhow::Context;
+use anyhow::{anyhow, Context};
 use arguments::{Action, Args};
 use linux_embedded_hal::{
     serial_core::{BaudRate, CharSize, FlowControl, Parity, PortSettings, SerialPort, StopBits},
@@ -12,8 +7,14 @@ use linux_embedded_hal::{
 use rfb_proto::{
     from_bytes, to_vec, ActuatorRequest, ActuatorResponse, SensorRequest, SensorResponse,
 };
+use std::{
+    io::{Read, Write},
+    path::Path,
+};
 
 pub mod arguments;
+
+pub type Result<T> = anyhow::Result<T>;
 
 const SETTINGS: PortSettings = PortSettings {
     baud_rate: BaudRate::Baud9600,
@@ -23,14 +24,19 @@ const SETTINGS: PortSettings = PortSettings {
     flow_control: FlowControl::FlowNone,
 };
 
-fn get_port(path: impl AsRef<Path>) -> anyhow::Result<TTYPort> {
-    let mut port = TTYPort::open(path.as_ref()).context("Failed to open tty port")?;
+fn get_port(path: impl AsRef<Path>) -> Result<TTYPort> {
+    let mut port = TTYPort::open(path.as_ref()).map_err(|e| {
+        anyhow!(
+            "Failed to open tty port \"{}\": {e}",
+            path.as_ref().display()
+        )
+    })?;
     port.configure(&SETTINGS)
         .context("Failed to configure serial port")?;
     Ok(port)
 }
 
-fn get_device_id(port: &mut TTYPort) -> anyhow::Result<String> {
+fn get_device_id(port: &mut TTYPort) -> Result<String> {
     let request = SensorRequest::WhoAreYou;
     let bytes: rfb_proto::Vec<u8, 1> = to_vec(&request).unwrap();
     port.write_all(&bytes).context("Request failed")?;
@@ -41,11 +47,11 @@ fn get_device_id(port: &mut TTYPort) -> anyhow::Result<String> {
     if let SensorResponse::IAm(str) = response {
         Ok(str.to_string())
     } else {
-        Err(anyhow::anyhow!("Unexpected response"))
+        Err(anyhow!("Unexpected response"))
     }
 }
 
-pub fn process(args: Args) -> anyhow::Result<()> {
+pub fn process(args: Args) -> Result<()> {
     match args.action {
         Action::GetCount { port: ports } => {
             for port in ports {
@@ -93,7 +99,7 @@ pub fn process(args: Args) -> anyhow::Result<()> {
                 match response {
                     ActuatorResponse::StartedGenerating => println!("Started generating"),
                     ActuatorResponse::FailedGenerating => {
-                        return Err(anyhow::anyhow!("Failed generating"));
+                        return Err(anyhow!("Failed generating"));
                     }
                     ActuatorResponse::FinishedGenerating => {
                         println!("Finished Generating");
