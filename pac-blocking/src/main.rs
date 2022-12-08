@@ -71,8 +71,8 @@ fn main() -> ! {
         let mut pa2_handled = false;
 
         loop {
-            let idr_a = unsafe { (*GPIOA::ptr()).idr.read() };
-            if idr_a.idr0().bit_is_set() {
+            let idr_a = unsafe { (*GPIOA::ptr()).idr.read() }.bits();
+            if idr_a & 0b1 != 0 {
                 pa0_handled = false;
             } else if !pa0_handled {
                 defmt::trace!("PA0 edge");
@@ -80,7 +80,7 @@ fn main() -> ! {
                 COUNTER.fetch_add(1, Ordering::SeqCst);
             }
 
-            if idr_a.idr1().bit_is_set() {
+            if idr_a & 0b10 != 0 {
                 pa1_handled = false;
             } else if !pa1_handled {
                 defmt::trace!("PA1 edge");
@@ -88,7 +88,7 @@ fn main() -> ! {
                 COUNTER.fetch_add(1, Ordering::SeqCst);
             }
 
-            if idr_a.idr2().bit_is_set() {
+            if idr_a & 0b100 != 0 {
                 pa2_handled = false;
             } else if !pa2_handled {
                 defmt::trace!("PA2 edge");
