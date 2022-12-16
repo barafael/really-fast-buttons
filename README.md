@@ -25,3 +25,11 @@ Otherwise, GPIO disambiguation would be required.
 These are basic example programs for some of the major design approaches and frameworks in current embedded Rust.
 Eventually, I'll benchmark up to which frequencies these edge counters hold, to see if there is any funny racy behaviour.
 I may add some pathological versions too, which intentionally contain races.
+
+## TODO
+
+For fairness, ensure all implementations use:
+
+* Same pin settings
+* Same clock settings
+* Same datatype for actual counting
