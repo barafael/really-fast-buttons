@@ -9,7 +9,7 @@ use cortex_m::peripheral::NVIC;
 use cortex_m_rt::entry;
 use defmt_rtt as _;
 use hal::gpio::{Alternate, Pin};
-use hal::pac::USART1;
+use hal::pac::{EXTI, USART1};
 use hal::serial::Serial;
 use nb::block;
 use panic_probe as _;
@@ -89,16 +89,22 @@ fn main() -> ! {
 
 #[interrupt]
 fn EXTI0() {
+    unsafe { (*EXTI::ptr()).pr.write(|w| w.bits(1 << 0)) };
+    defmt::trace!("PA0 edge");
     cortex_m::interrupt::free(|cs| COUNTER.borrow(cs).set(COUNTER.borrow(cs).get() + 1))
 }
 
 #[interrupt]
 fn EXTI1() {
+    unsafe { (*EXTI::ptr()).pr.write(|w| w.bits(1 << 1)) };
+    defmt::trace!("PA1 edge");
     cortex_m::interrupt::free(|cs| COUNTER.borrow(cs).set(COUNTER.borrow(cs).get() + 1))
 }
 
 #[interrupt]
 fn EXTI2() {
+    unsafe { (*EXTI::ptr()).pr.write(|w| w.bits(1 << 2)) };
+    defmt::trace!("PA2 edge");
     cortex_m::interrupt::free(|cs| COUNTER.borrow(cs).set(COUNTER.borrow(cs).get() + 1))
 }
 
