@@ -1,6 +1,4 @@
 use std::env;
-use std::fs::copy;
-use std::path::PathBuf;
 
 fn main() {
     // Allows to show relevant environment variables for debugging purpose
@@ -16,8 +14,8 @@ fn main() {
     b.freertos("freertos-kernel");
 
     b.freertos_config(".");
-        
-    b.compile().unwrap_or_else(|e| { panic!("{}", e.to_string()) });
+
+    b.compile().unwrap_or_else(|e| panic!("{}", e.to_string()));
 }
 
 /// Print relevant environment variables
@@ -26,11 +24,8 @@ fn print_env() {
     env::vars().for_each(|(key, val)| {
         if key.starts_with("CARGO") {
             println!("cargo:warning={}={}", key, val);
-        } else if env_keys.contains(&key.as_str()) {
-            println!("cargo:warning={}={}", key, val);
         } else {
             // println!("cargo:warning={}={}", key, val);
         }
     });
 }
-

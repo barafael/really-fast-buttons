@@ -10,5 +10,4 @@ clap = "3"
 clap_derive = "3"
 klask = { git = "https://github.com/MichalGniadek/klask" }
 linux-embedded-hal = "0.3.2"
-#rfb-proto = { path = "../RFB-proto", features = ["sensor", "actuator"] }
 rfb-proto = { path = "../proto", features = ["sensor", "actuator"] }

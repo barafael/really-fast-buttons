@@ -14,7 +14,7 @@ freertos-rust = { git = "https://github.com/lobaro/FreeRTOS-rust" }
 freertos-cargo-build = { git = "https://github.com/lobaro/FreeRTOS-rust" }
 
 [target.'cfg(target_arch = "arm")'.dependencies]
-cortex-m = "0.7.6"
+cortex-m = { version = "0.7.6", features = ["critical-section-single-core"] }
 cortex-m-rt = { version = "0.7.2" }
 
 [target.thumbv7em-none-eabihf.dependencies]
