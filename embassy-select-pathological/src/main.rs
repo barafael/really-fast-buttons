@@ -52,17 +52,15 @@ async fn main(spawner: Spawner) {
         match f {
             Either3::First(_) => {
                 defmt::trace!("PA0 edge");
-                COUNTER.fetch_add(1, Ordering::Relaxed);
             }
             Either3::Second(_) => {
                 defmt::trace!("PA1 edge");
-                COUNTER.fetch_add(1, Ordering::Relaxed);
             }
             Either3::Third(_) => {
                 defmt::trace!("PA2 edge");
-                COUNTER.fetch_add(1, Ordering::Relaxed);
             }
         }
+        COUNTER.fetch_add(1, Ordering::Relaxed);
     }
 }
 
