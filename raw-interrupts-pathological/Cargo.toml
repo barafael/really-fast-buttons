@@ -1,5 +1,5 @@
 [package]
-name = "rfb-raw-interrupts"
+name = "rfb-raw-interrupts-pathological"
 version = "0.1.0"
 authors = ["Rafael Bachmann <rafael.bachmann.93@gmail.com"]
 edition = "2021"

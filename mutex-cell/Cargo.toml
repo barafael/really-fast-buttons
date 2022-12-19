@@ -1,5 +1,5 @@
 [package]
-name = "mutex-cell"
+name = "rfb-mutex-cell"
 version = "0.1.0"
 authors = ["Rafael Bachmann <rafael.bachmann.93@gmail.com"]
 edition = "2021"
