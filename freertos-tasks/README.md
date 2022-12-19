@@ -1,5 +1,3 @@
-# Example
+# RFB using FreeRTOS tasks
 
-The example is written for stm32f411ceu6 (STM32 Cortex-M4)
-
-https://stm32-base.org/boards/STM32F411CEU6-WeAct-Black-Pill-V2.0.html
+[Work in progress] three freertos tasks sharing access to an atomic, and one task to handle the USART1 connection.

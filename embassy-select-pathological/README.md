@@ -4,4 +4,6 @@ This example selects between three futures generated with `paX.wait_for_rising_e
 This select is polled within a loop, and when one future wins, an atomic is incremented.
 The futures are dropped and re-generated each loop iteration, leading to a low reactivity.
 
+The USART1 connection is handled in a separately spawned embassy task.
+
 I really like the conciseness of this solution, but it is not correct.
