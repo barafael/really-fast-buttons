@@ -123,21 +123,21 @@ mod app {
         }
     }
 
-    #[task(binds = EXTI0, local = [pa0])]
+    #[task(binds = EXTI0, local = [pa0], priority = 1)]
     fn on_exti0(ctx: on_exti0::Context) {
         ctx.local.pa0.clear_interrupt_pending_bit();
         defmt::trace!("PA0 edge");
         COUNTER.fetch_add(1, Ordering::SeqCst);
     }
 
-    #[task(binds = EXTI1, local = [pa1])]
+    #[task(binds = EXTI1, local = [pa1], priority = 1)]
     fn on_exti1(ctx: on_exti1::Context) {
         ctx.local.pa1.clear_interrupt_pending_bit();
         defmt::trace!("PA1 edge");
         COUNTER.fetch_add(1, Ordering::SeqCst);
     }
 
-    #[task(binds = EXTI2, local = [pa2])]
+    #[task(binds = EXTI2, local = [pa2], priority = 1)]
     fn on_exti2(ctx: on_exti2::Context) {
         ctx.local.pa2.clear_interrupt_pending_bit();
         defmt::trace!("PA2 edge");
