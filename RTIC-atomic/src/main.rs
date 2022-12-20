@@ -112,7 +112,7 @@ mod app {
             let byte = block!(ctx.local.rx.read()).unwrap();
             defmt::trace!("USART1 active");
             let byte = rfb_proto::from_bytes(&[byte]);
-            if let Ok(SensorRequest::GetCount) = byte {
+            if byte == Ok(SensorRequest::GetCount) {
                 let count = COUNTER.swap(0, Ordering::Acquire);
                 let response = SensorResponse::Count(count as u32);
                 let bytes: rfb_proto::Vec<u8, 5> = rfb_proto::to_vec(&response).unwrap();

@@ -25,7 +25,7 @@ const ID: &str = env!("CARGO_PKG_NAME");
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
     defmt::println!("init: {}", crate::ID);
-    let p = embassy_stm32::init(Default::default());
+    let p = embassy_stm32::init(embassy_stm32::Config::default());
 
     let mut config = Config::default();
     config.baudrate = 9600;

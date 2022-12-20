@@ -91,21 +91,21 @@ fn main() -> ! {
 fn EXTI0() {
     unsafe { (*EXTI::ptr()).pr.write(|w| w.bits(1 << 0)) };
     defmt::trace!("PA0 edge");
-    cortex_m::interrupt::free(|cs| COUNTER.borrow(cs).set(COUNTER.borrow(cs).get() + 1))
+    cortex_m::interrupt::free(|cs| COUNTER.borrow(cs).set(COUNTER.borrow(cs).get() + 1));
 }
 
 #[interrupt]
 fn EXTI1() {
     unsafe { (*EXTI::ptr()).pr.write(|w| w.bits(1 << 1)) };
     defmt::trace!("PA1 edge");
-    cortex_m::interrupt::free(|cs| COUNTER.borrow(cs).set(COUNTER.borrow(cs).get() + 1))
+    cortex_m::interrupt::free(|cs| COUNTER.borrow(cs).set(COUNTER.borrow(cs).get() + 1));
 }
 
 #[interrupt]
 fn EXTI2() {
     unsafe { (*EXTI::ptr()).pr.write(|w| w.bits(1 << 2)) };
     defmt::trace!("PA2 edge");
-    cortex_m::interrupt::free(|cs| COUNTER.borrow(cs).set(COUNTER.borrow(cs).get() + 1))
+    cortex_m::interrupt::free(|cs| COUNTER.borrow(cs).set(COUNTER.borrow(cs).get() + 1));
 }
 
 #[interrupt]
@@ -115,7 +115,7 @@ fn USART1() {
 
     if let Ok(byte) = serial.read() {
         let request = rfb_proto::from_bytes(&[byte]);
-        if let Ok(SensorRequest::GetCount) = request {
+        if request == Ok(SensorRequest::GetCount) {
             let count = cortex_m::interrupt::free(|cs| COUNTER.borrow(cs).replace(0));
             let response = SensorResponse::Count(count as u32);
             let bytes: rfb_proto::Vec<u8, 5> = rfb_proto::to_vec(&response).unwrap();

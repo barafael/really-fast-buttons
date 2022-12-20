@@ -30,7 +30,7 @@ static CHANNEL: Channel<ThreadModeRawMutex, (), 128> =
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
     defmt::println!("init: {}", crate::ID);
-    let p = embassy_stm32::init(Default::default());
+    let p = embassy_stm32::init(embassy_stm32::Config::default());
 
     let mut config = Config::default();
     config.baudrate = 9600;
@@ -78,7 +78,7 @@ async fn main(spawner: Spawner) {
                 let n = buf.len();
                 let byte = rfb_proto::from_bytes(buf);
                 rx.consume(n);
-                if let Ok(SensorRequest::GetCount) = byte {
+                if byte == Ok(SensorRequest::GetCount) {
                     let response = SensorResponse::Count(count as u32);
                     count = 0;
                     let bytes: rfb_proto::Vec<u8, 5> = rfb_proto::to_vec(&response).unwrap();

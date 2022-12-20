@@ -97,7 +97,7 @@ fn USART1() {
 
     let byte = serial.read().unwrap();
     let request = rfb_proto::from_bytes(&[byte]);
-    if let Ok(SensorRequest::GetCount) = request {
+    if request == Ok(SensorRequest::GetCount) {
         let count = unsafe {
             let count = COUNTER;
             COUNTER = 0;

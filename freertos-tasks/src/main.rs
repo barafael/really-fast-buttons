@@ -55,8 +55,8 @@ impl<D1: OutputPin> Blinker<D1>
 where
     D1::Error: core::fmt::Debug,
 {
-    pub fn from_pins(d1: D1) -> Blinker<D1> {
-        Blinker { d1 }
+    pub fn from_pins(d1: D1) -> Self {
+        Self { d1 }
     }
 
     pub fn set_led(&mut self, on: bool) {
@@ -79,9 +79,9 @@ where
     D1: InputPin,
     D1::Error: core::fmt::Debug,
 {
-    pub fn from_pins(d1: D1, id: &'static str) -> Monitor<D1> {
+    pub fn from_pins(d1: D1, id: &'static str) -> Self {
         let last_state = d1.is_high().unwrap();
-        Monitor { d1, last_state, id }
+        Self { d1, last_state, id }
     }
 
     pub fn run(&mut self) -> ! {
@@ -118,7 +118,7 @@ impl Reporter {
             defmt::trace!("{:x}", byte);
             defmt::trace!("USART1 active");
             let byte = rfb_proto::from_bytes(&[byte]);
-            if let Ok(SensorRequest::GetCount) = byte {
+            if byte == Ok(SensorRequest::GetCount) {
                 let count = COUNTER.swap(0, Ordering::Acquire);
                 let response = SensorResponse::Count(count as u32);
                 let bytes: rfb_proto::Vec<u8, 5> = rfb_proto::to_vec(&response).unwrap();

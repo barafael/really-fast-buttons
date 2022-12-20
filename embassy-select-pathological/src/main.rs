@@ -25,7 +25,7 @@ const ID: &str = env!("CARGO_PKG_NAME");
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
     defmt::println!("init: {}", crate::ID);
-    let p = embassy_stm32::init(Default::default());
+    let p = embassy_stm32::init(embassy_stm32::Config::default());
 
     let usart = p.USART1;
     let pa10 = p.PA10;
@@ -82,7 +82,7 @@ async fn monitor_usart(usart: peripherals::USART1, pa10: peripherals::PA10, pa9:
         let n = buf.len();
         let byte = rfb_proto::from_bytes(buf);
         rx.consume(n);
-        if let Ok(SensorRequest::GetCount) = byte {
+        if byte == Ok(SensorRequest::GetCount) {
             let count = COUNTER.swap(0, Ordering::Acquire);
             let response = SensorResponse::Count(count as u32);
             let bytes: rfb_proto::Vec<u8, 5> = rfb_proto::to_vec(&response).unwrap();

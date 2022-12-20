@@ -23,7 +23,7 @@ fn print_env() {
     let env_keys = ["TARGET", "OUT_DIR", "HOST"];
     env::vars().for_each(|(key, val)| {
         if key.starts_with("CARGO") {
-            println!("cargo:warning={}={}", key, val);
+            println!("cargo:warning={key}={val}");
         } else {
             // println!("cargo:warning={}={}", key, val);
         }
