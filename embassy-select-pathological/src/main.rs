@@ -48,8 +48,8 @@ async fn main(spawner: Spawner) {
         let one = pa1.wait_for_rising_edge();
         let two = pa2.wait_for_rising_edge();
 
-        let f = embassy_futures::select::select3(zero, one, two).await;
-        match f {
+        let f = embassy_futures::select::select3(zero, one, two);
+        match f.await {
             Either3::First(_) => {
                 defmt::trace!("PA0 edge");
             }

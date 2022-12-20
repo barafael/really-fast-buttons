@@ -1,0 +1,36 @@
+[package]
+name = "rfb-embassy-tasks-channels"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rfb-proto = { path = "../proto", features = ["sensor"] }
+panic-probe = { version = "0.3.0" }
+embassy-executor = { version = "0.1.0", features = [
+    "defmt",
+    "integrated-timers",
+] }
+defmt = "0.3.0"
+defmt-rtt = "0.3.2"
+embassy-stm32 = { version = "0.1.0", features = [
+    "defmt",
+    "nightly",
+    "unstable-traits",
+    "defmt",
+    "stm32f411re",
+    "unstable-pac",
+    "memory-x",
+    "time-driver-any",
+    "exti",
+] }
+cortex-m-rt = "0.7.1"
+cortex-m = { version = "0.7.6", features = ["critical-section-single-core"] }
+embedded-io = "0.3.0"
+embassy-futures = "0.1.0"
+embassy-sync = "0.1.0"
+
+[patch.crates-io]
+embassy-time = { git = "https://github.com/embassy-rs/embassy" }
+embassy-sync = { git = "https://github.com/embassy-rs/embassy" }
+embassy-stm32 = { git = "https://github.com/embassy-rs/embassy" }
+embassy-executor = { git = "https://github.com/embassy-rs/embassy" }

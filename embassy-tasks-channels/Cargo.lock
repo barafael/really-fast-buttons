@@ -401,6 +401,12 @@ dependencies = [
 [[package]]
 name = "embassy-futures"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "47e5367165d347c039360f784812f493b001583ab6a3dd8622f4ce9c30374ec3"
+
+[[package]]
+name = "embassy-futures"
+version = "0.1.0"
 source = "git+https://github.com/embassy-rs/embassy#18453ee64c7d1b397aa96cb322cedee6166b4602"
 
 [[package]]
@@ -437,7 +443,7 @@ dependencies = [
  "embassy-cortex-m",
  "embassy-embedded-hal",
  "embassy-executor",
- "embassy-futures",
+ "embassy-futures 0.1.0 (git+https://github.com/embassy-rs/embassy)",
  "embassy-hal-common",
  "embassy-sync",
  "embassy-time",
@@ -939,7 +945,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a3f87b73ce11b1619a3c6332f45341e0047173771e8b8b73f87bfeefb7b56244"
 
 [[package]]
-name = "rfb-embassy-select-pathological"
+name = "rfb-embassy-tasks-channels"
 version = "0.1.0"
 dependencies = [
  "cortex-m",
@@ -947,8 +953,9 @@ dependencies = [
  "defmt",
  "defmt-rtt",
  "embassy-executor",
- "embassy-futures",
+ "embassy-futures 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "embassy-stm32",
+ "embassy-sync",
  "embedded-io",
  "panic-probe",
  "rfb-proto",
@@ -1083,9 +1090,9 @@ dependencies = [
 
 [[package]]
 name = "snafu"
-version = "0.7.3"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a152ba99b054b22972ee794cf04e5ef572da1229e33b65f3c57abbff0525a454"
+checksum = "dd726aec4ebad65756394ff89a9b9598793d4e30121cd71690244c1e497b3aee"
 dependencies = [
  "doc-comment",
  "snafu-derive",
@@ -1093,9 +1100,9 @@ dependencies = [
 
 [[package]]
 name = "snafu-derive"
-version = "0.7.3"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5e79cdebbabaebb06a9bdbaedc7f159b410461f63611d4d0e3fb0fab8fed850"
+checksum = "712529e9b0b014eabaa345b38e06032767e3dc393e8b017e853b1d7247094e74"
 dependencies = [
  "heck",
  "proc-macro2",
