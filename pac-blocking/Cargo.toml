@@ -13,7 +13,7 @@ cortex-m-rt = "0.7"
 defmt = "0.3.2"
 defmt-rtt = "0.3.2"
 panic-probe = { version = "0.3.0", features = ["print-defmt"] }
-cortex-m = "0.7.6"
+cortex-m = { version = "0.7.6", features = ["critical-section-single-core"] }
 rfb-proto = { path = "../proto", features = ["sensor"] }
 
 [dependencies.stm32f4xx-hal]
