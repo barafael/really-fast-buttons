@@ -56,7 +56,10 @@ pub fn process(args: Args) -> Result<()> {
         Action::GetCount { port: ports } => {
             for port in ports {
                 let mut port = get_port(&port)?;
-                let id = get_device_id(&mut port)?;
+                let id = {
+                    //get_device_id(&mut port)?;
+                    "placeholder".to_string()
+                };
                 let request = SensorRequest::GetCount;
                 let bytes: rfb_proto::Vec<u8, 1> = to_vec(&request).unwrap();
                 port.write_all(&bytes).context("Request failed")?;
@@ -66,7 +69,7 @@ pub fn process(args: Args) -> Result<()> {
                 let response: SensorResponse =
                     from_bytes(&response).expect("Parsing response failed");
                 if let SensorResponse::Count(n) = response {
-                    println!("id {id}: {n}");
+                    println!("id \"{id}\": {n}");
                 } else {
                     eprintln!("Unexpected response: {response:?}");
                 }
