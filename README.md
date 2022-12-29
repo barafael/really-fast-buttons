@@ -33,3 +33,4 @@ For fairness, ensure all implementations use:
 * Same pin settings
 * Same clock settings
 * Same datatype for actual counting
+* Same atomic orderings (which one applies best here?)

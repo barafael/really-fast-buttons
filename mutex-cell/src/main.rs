@@ -117,7 +117,7 @@ fn USART1() {
         let request = rfb_proto::from_bytes(&[byte]);
         if request == Ok(SensorRequest::GetCount) {
             let count = cortex_m::interrupt::free(|cs| COUNTER.borrow(cs).replace(0));
-            let response = SensorResponse::Count(count as u32);
+            let response = SensorResponse::Count(count);
             let bytes: rfb_proto::Vec<u8, 5> = rfb_proto::to_vec(&response).unwrap();
             for byte in bytes {
                 block!(serial.write(byte)).unwrap();

@@ -445,7 +445,7 @@ dependencies = [
  "embedded-hal 1.0.0-alpha.9",
  "embedded-hal-async",
  "embedded-hal-nb",
- "embedded-io 0.4.0",
+ "embedded-io",
  "embedded-storage",
  "embedded-storage-async",
  "futures",
@@ -469,7 +469,7 @@ dependencies = [
  "cfg-if",
  "critical-section 1.1.1",
  "defmt",
- "embedded-io 0.4.0",
+ "embedded-io",
  "futures-util",
  "heapless",
 ]
@@ -530,12 +530,6 @@ dependencies = [
  "embedded-hal 1.0.0-alpha.9",
  "nb 1.0.0",
 ]
-
-[[package]]
-name = "embedded-io"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33dfba9e6c113f2fd8537c943780a7345945e66c86972e356b1152e19481bcf5"
 
 [[package]]
 name = "embedded-io"
@@ -963,7 +957,7 @@ dependencies = [
  "embassy-futures 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "embassy-stm32",
  "embassy-sync",
- "embedded-io 0.3.1",
+ "embedded-io",
  "panic-probe",
  "rfb-proto",
 ]

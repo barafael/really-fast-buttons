@@ -8,12 +8,11 @@ use panic_probe as _;
 
 use embassy_executor::Spawner;
 use embassy_stm32::{
-    dma::NoDma,
     exti::ExtiInput,
     gpio::{Input, Pull},
     interrupt,
     peripherals::{PA0, PA1, PA2},
-    usart::{BufferedUart, Config, State, Uart},
+    usart::{BufferedUart, Config, State},
 };
 use embassy_sync::channel::Sender;
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
@@ -32,15 +31,23 @@ async fn main(spawner: Spawner) {
     defmt::println!("init: {}", crate::ID);
     let p = embassy_stm32::init(embassy_stm32::Config::default());
 
-    let mut config = Config::default();
-    config.baudrate = 9600;
-    let usart = Uart::new(p.USART1, p.PA10, p.PA9, NoDma, NoDma, config);
-
     let mut state = State::new();
     let irq = interrupt::take!(USART1);
     let mut tx_buf = [0u8; 32];
     let mut rx_buf = [0u8; 1];
-    let mut buf_usart = BufferedUart::new(&mut state, usart, irq, &mut tx_buf, &mut rx_buf);
+    let mut config = Config::default();
+    config.baudrate = 9600;
+
+    let mut buf_usart = BufferedUart::new(
+        &mut state,
+        p.USART1,
+        p.PA10,
+        p.PA9,
+        irq,
+        &mut tx_buf,
+        &mut rx_buf,
+        config,
+    );
 
     let pa0 = Input::new(p.PA0, Pull::Up);
     let pa1 = Input::new(p.PA1, Pull::Up);
@@ -63,7 +70,7 @@ async fn main(spawner: Spawner) {
     spawner.spawn(pa1_hdl).unwrap();
     spawner.spawn(pa2_hdl).unwrap();
 
-    let mut count: usize = 0;
+    let mut count: u32 = 0;
 
     let (mut rx, mut tx) = buf_usart.split();
     loop {
@@ -79,7 +86,7 @@ async fn main(spawner: Spawner) {
                 let byte = rfb_proto::from_bytes(buf);
                 rx.consume(n);
                 if byte == Ok(SensorRequest::GetCount) {
-                    let response = SensorResponse::Count(count as u32);
+                    let response = SensorResponse::Count(count);
                     count = 0;
                     let bytes: rfb_proto::Vec<u8, 5> = rfb_proto::to_vec(&response).unwrap();
                     tx.write_all(&bytes).await.unwrap();
