@@ -4,13 +4,22 @@
 			"path": "client"
 		},
 		{
-			"path": "embassy-select"
+			"path": "embassy-select-pathological"
 		},
 		{
 			"path": "embassy-tasks"
 		},
 		{
+			"path": "embassy-tasks-channels"
+		},
+		{
+			"path": "freertos-tasks"
+		},
+		{
 			"path": "hal-blocking"
+		},
+		{
+			"path": "mutex-cell"
 		},
 		{
 			"path": "pac-blocking"
@@ -22,13 +31,16 @@
 			"path": "raw-interrupts"
 		},
 		{
+			"path": "raw-interrupts-pathological"
+		},
+		{
 			"path": "RTIC-atomic"
+		},
+		{
+			"path": "RTIC-counter-peripheral"
 		},
 		{
 			"path": "RTIC-shared"
 		},
-		{
-			"path": "freertos-tasks"
-		}
 	]
 }
