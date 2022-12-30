@@ -11,14 +11,24 @@ The current edge count can be queried via serial on (tx/rx) = (PA9/PA10). It is 
 * hal-blocking: busy-read the individual pins
   Ironically this requires an at least interrupt-driven Serial port, so that the SERIAL RXNE doesn't also have to be polled.
 * raw-interrupts: three `#[interrupt]`s from `stm32f4xx-hal`, incrementing an atomic `u32`. Interrupt-driven serial port.
+* mutex-cell: three `#[interrupt]`s from `stm32f4xx-hal` share access to a `core::cell::Cell` via a `cortex_m::interrupt::Mutex`.
 * RTIC-atomic: three RTIC tasks with high priority which increment an atomic variable. Idle task manages Serial port.
 * RTIC-shared: three RTIC tasks with high priority which increment a shared RTIC variable. Idle task manages Serial port.
+* RTIC-counter-peripheral [WIP]: Uses TIM4 on ONE digital input.
 * embassy-tasks: three embassy tasks which each `await` a level change, then increment an atomic variable.
-* embassy-select: three embassy futures which describe waiting on a level change, which are composed into a `select3`.
-  On completion of one future, an atomic is incremented.
+* embassy-tasks-channels: waits in three tasks for any edge, then enqueues a `()` on a global channel. This channel is `select`ed upon together with the serial port in the main loop.
 
 The interrupt-based approaches do benefit from the inputs being on separate interrupt lines 0, 1, and 2.
 Otherwise, GPIO disambiguation would be required.
+
+## Pathological Examples
+
+These are plain wrong.
+
+* embassy-select-pathological: three embassy futures which describe waiting on a level change, which are composed into a `select3`.
+  On completion of one future, an atomic is incremented.
+  This is not very responsive due to dropping the futures.
+* raw-interrupts-pathological: Races galore hiding in the `unsafe` blocks.
 
 ## Why?
 
