@@ -1,7 +1,6 @@
 #![deny(unsafe_code)]
 #![no_main]
 #![no_std]
-#![allow(unused_imports)]
 
 use panic_probe as _;
 
@@ -19,17 +18,16 @@ const ID: &str = env!("CARGO_PKG_NAME");
 
 #[app(device = stm32f4xx_hal::pac, peripherals = true)]
 mod app {
-    use core::fmt::Write;
     use core::sync::atomic::{AtomicUsize, Ordering};
     use rfb_proto::{SensorRequest, SensorResponse};
     use stm32f4xx_hal::{
         block,
-        gpio::{gpioa::PA0, gpioc::PC6, Alternate, Edge, Input, Output, Pin, PushPull},
+        gpio::{Edge, Input, Pin},
         pac::USART1,
         prelude::*,
-        serial::{Rx, Serial, Tx},
+        serial::{Rx, Tx},
     };
-    use systick_monotonic::{fugit::Duration, Systick};
+    use systick_monotonic::Systick;
 
     static COUNTER: AtomicUsize = AtomicUsize::new(0);
 
