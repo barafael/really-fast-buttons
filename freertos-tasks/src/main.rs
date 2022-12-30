@@ -151,8 +151,8 @@ fn main() -> ! {
 
     let rcc = dp.RCC.constrain();
 
-    // Set up the system clock. We want to run at 48MHz for this one.
-    let clocks = rcc.cfgr.use_hse(25.MHz()).sysclk(48.MHz()).freeze();
+    // Set up the system clock. We want to run at 16MHz for this one.
+    let clocks = rcc.cfgr.use_hse(25.MHz()).sysclk(16.MHz()).freeze();
 
     // Setup USART1
     let tx_pin = gpioa.pa9.into_alternate();

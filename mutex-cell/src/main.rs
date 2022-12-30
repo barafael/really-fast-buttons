@@ -3,7 +3,6 @@
 #![no_std]
 
 use core::cell::Cell;
-
 use cortex_m::interrupt::Mutex;
 use cortex_m::peripheral::NVIC;
 use cortex_m_rt::entry;
@@ -37,8 +36,8 @@ fn main() -> ! {
         let rcc = dp.RCC.constrain();
         let mut syscfg = dp.SYSCFG.constrain();
 
-        // Set up the system clock. We want to run at 48MHz for this one.
-        let clocks = rcc.cfgr.use_hse(25.MHz()).sysclk(48.MHz()).freeze();
+        // Set up the system clock. We want to run at 16MHz for this one.
+        let clocks = rcc.cfgr.use_hse(25.MHz()).sysclk(16.MHz()).freeze();
         let gpioa = dp.GPIOA.split();
 
         // Setup USART1
