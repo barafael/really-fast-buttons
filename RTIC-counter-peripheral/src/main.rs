@@ -19,8 +19,8 @@ mod app {
     use rfb_proto::{SensorRequest, SensorResponse};
     use stm32f4xx_hal::{
         block,
-        gpio::{Edge, ExtiPin, GpioExt, PinState},
-        pac::{TIM4, USART1},
+        gpio::{GpioExt, PinState},
+        pac::{TIM5, USART1},
         prelude::*,
         serial::{Rx, Tx},
         timer::Timer,
@@ -37,13 +37,13 @@ mod app {
 
     #[local]
     struct Local {
-        timer: TIM4,
+        timer: TIM5,
         tx: Tx<USART1>,
         rx: Rx<USART1>,
     }
 
     #[init]
-    fn init(mut ctx: init::Context) -> (Shared, Local, init::Monotonics) {
+    fn init(ctx: init::Context) -> (Shared, Local, init::Monotonics) {
         // System clock and monotonic timer
         let rcc = ctx.device.RCC.constrain();
         let clocks = rcc.cfgr.sysclk(CLOCK_FREQ_HZ.Hz()).freeze();
@@ -52,26 +52,22 @@ mod app {
         let gpioc = ctx.device.GPIOC.split();
         let _led = gpioc.pc13.into_push_pull_output_in_state(PinState::High);
 
-        let gpiob = ctx.device.GPIOB.split();
-        let mut input = gpiob.pb8.into_pull_down_input();
+        let gpioa = ctx.device.GPIOA.split();
+        let mut _input0 = gpioa.pa0.into_pull_down_input();
+        let mut _input1 = gpioa.pa1.into_pull_down_input();
+        let mut _input2 = gpioa.pa2.into_pull_down_input();
 
-        // Configure TIM4 as a hardware counter for CLK edges using TI2 input.
+        // Configure TIM5 as a hardware counter for CLK edges using TI2 input.
         // Register configuration per ST RM0383, section 13.3.3.
         // Use the HAL to enable and reset, then release for manual register config.
-        let timer = Timer::new(ctx.device.TIM4, &clocks).release();
+        let timer = Timer::new(ctx.device.TIM5, &clocks).release();
         timer
             .ccmr1_input()
-            .write(|w| w.cc2s().ti2().ic2f().bits(0b0011));
+            .write(|w| w.cc2s().ti2().ic2f().bits(0b0001));
         timer.ccer.write(|w| w.cc2np().set_bit().cc2p().set_bit());
         timer.smcr.write(|w| w.sms().ext_clock_mode().ts().ti2fp2());
         timer.cr1.write(|w| w.cen().set_bit());
 
-        // Enable edge-triggered interrupt for input pin
-        input.make_interrupt_source(&mut ctx.device.SYSCFG.constrain());
-        input.enable_interrupt(&mut ctx.device.EXTI);
-        input.trigger_on_edge(&mut ctx.device.EXTI, Edge::RisingFalling);
-
-        let gpioa = ctx.device.GPIOA.split();
         let tx_pin = gpioa.pa9.into_alternate();
         let rx_pin = gpioa.pa10.into_alternate();
 
@@ -97,9 +93,9 @@ mod app {
             let request = rfb_proto::from_bytes(&[byte]);
             match request {
                 Ok(SensorRequest::GetCount) => {
-                    let clk_count: u16 = ctx.local.timer.cnt.read().cnt().bits();
+                    let clk_count = ctx.local.timer.cnt.read().cnt().bits();
                     defmt::info!("Count: {}", clk_count);
-                    let response = SensorResponse::Count(clk_count as u32);
+                    let response = SensorResponse::Count(clk_count);
                     let bytes: rfb_proto::Vec<u8, 5> = rfb_proto::to_vec(&response).unwrap();
                     for byte in bytes {
                         block!(ctx.local.tx.write(byte)).unwrap();
