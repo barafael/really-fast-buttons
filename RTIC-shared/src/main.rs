@@ -52,7 +52,7 @@ mod app {
         defmt::println!("init: {}", crate::ID);
 
         let rcc = ctx.device.RCC.constrain();
-        let clocks = rcc.cfgr.sysclk(16.MHz()).freeze();
+        let clocks = rcc.cfgr.sysclk(32.MHz()).freeze();
 
         let gpioc = ctx.device.GPIOC.split();
         let _led = gpioc.pc13.into_push_pull_output();
@@ -90,7 +90,7 @@ mod app {
 
         let (tx, rx) = serial.split();
 
-        let mono = Systick::new(ctx.core.SYST, 16_000_000);
+        let mono = Systick::new(ctx.core.SYST, 32_000_000);
 
         (
             Shared { counter: 0 },

@@ -27,7 +27,7 @@ mod app {
     };
     use systick_monotonic::Systick;
 
-    const CLOCK_FREQ_HZ: u32 = 16_000_000;
+    const CLOCK_FREQ_HZ: u32 = 32_000_000;
 
     #[monotonic(binds = SysTick, default = true)]
     type Tonic = Systick<1000>;
