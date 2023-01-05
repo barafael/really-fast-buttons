@@ -14,6 +14,8 @@ fn panic() -> ! {
 use defmt_rtt as _;
 use rtic::app;
 
+const ID: &str = env!("CARGO_PKG_NAME");
+
 #[app(device = stm32f4xx_hal::pac, peripherals = true)]
 mod app {
     use rfb_proto::{SensorRequest, SensorResponse};
@@ -44,6 +46,8 @@ mod app {
 
     #[init]
     fn init(mut ctx: init::Context) -> (Shared, Local, init::Monotonics) {
+        defmt::println!("init: {}", crate::ID);
+
         // System clock and monotonic timer
         let rcc = ctx.device.RCC.constrain();
         let clocks = rcc.cfgr.sysclk(CLOCK_FREQ_HZ.Hz()).freeze();
