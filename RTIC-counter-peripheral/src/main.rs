@@ -16,10 +16,13 @@ use rtic::app;
 
 #[app(device = stm32f4xx_hal::pac, peripherals = true)]
 mod app {
+    use rfb_proto::{SensorRequest, SensorResponse};
     use stm32f4xx_hal::{
-        gpio::{Edge, ExtiPin, GpioExt, Input, Output, Pin, PinState, PushPull},
-        pac::TIM4,
+        block,
+        gpio::{Edge, ExtiPin, GpioExt, PinState},
+        pac::{TIM4, USART1},
         prelude::*,
+        serial::{Rx, Tx},
         timer::Timer,
     };
     use systick_monotonic::Systick;
@@ -34,9 +37,9 @@ mod app {
 
     #[local]
     struct Local {
-        led: Pin<'C', 13, Output<PushPull>>,
-        input: Pin<'B', 8, Input>,
         timer: TIM4,
+        tx: Tx<USART1>,
+        rx: Rx<USART1>,
     }
 
     #[init]
@@ -47,7 +50,7 @@ mod app {
 
         // GPIO pins
         let gpioc = ctx.device.GPIOC.split();
-        let led = gpioc.pc13.into_push_pull_output_in_state(PinState::High);
+        let _led = gpioc.pc13.into_push_pull_output_in_state(PinState::High);
 
         let gpiob = ctx.device.GPIOB.split();
         let mut input = gpiob.pb8.into_pull_down_input();
@@ -68,20 +71,45 @@ mod app {
         input.enable_interrupt(&mut ctx.device.EXTI);
         input.trigger_on_edge(&mut ctx.device.EXTI, Edge::RisingFalling);
 
+        let gpioa = ctx.device.GPIOA.split();
+        let tx_pin = gpioa.pa9.into_alternate();
+        let rx_pin = gpioa.pa10.into_alternate();
+
+        // Configure serial
+        let serial = ctx
+            .device
+            .USART1
+            .serial((tx_pin, rx_pin), 9600.bps(), &clocks)
+            .unwrap();
+
+        let (tx, rx) = serial.split();
+
         let mono = Systick::new(ctx.core.SYST, CLOCK_FREQ_HZ);
 
-        (
-            Shared {},
-            Local { led, input, timer },
-            init::Monotonics(mono),
-        )
+        (Shared {}, Local { timer, tx, rx }, init::Monotonics(mono))
     }
 
-    #[task(binds = EXTI9_5, local = [input, timer, led])]
-    fn on_exti(ctx: on_exti::Context) {
-        ctx.local.input.clear_interrupt_pending_bit();
-        let clk_count: u16 = ctx.local.timer.cnt.read().cnt().bits();
-        defmt::info!("Count: {}", clk_count);
-        ctx.local.led.toggle();
+    #[idle(local = [tx, rx, timer])]
+    fn idle(ctx: idle::Context) -> ! {
+        loop {
+            let byte = block!(ctx.local.rx.read()).unwrap();
+            defmt::trace!("USART1 active");
+            let request = rfb_proto::from_bytes(&[byte]);
+            match request {
+                Ok(SensorRequest::GetCount) => {
+                    let clk_count: u16 = ctx.local.timer.cnt.read().cnt().bits();
+                    defmt::info!("Count: {}", clk_count);
+                    let response = SensorResponse::Count(clk_count as u32);
+                    let bytes: rfb_proto::Vec<u8, 5> = rfb_proto::to_vec(&response).unwrap();
+                    for byte in bytes {
+                        block!(ctx.local.tx.write(byte)).unwrap();
+                    }
+                }
+                Ok(SensorRequest::WhoAreYou) => {
+                    defmt::warn!("WhoAreYou not implemented yet")
+                }
+                Err(e) => defmt::error!("Not a request {}", e),
+            }
+        }
     }
 }
