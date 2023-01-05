@@ -1,5 +1,5 @@
 [package]
-name = "rfb-rtic-atomic"
+name = "rfb-rtic-queues"
 version = "0.1.0"
 authors = ["Rafael Bachmann <rafael.bachmann.93@gmail.com"]
 edition = "2021"
@@ -10,9 +10,9 @@ systick-monotonic = "1.0.0"
 defmt = "0.3.2"
 defmt-rtt = "0.3.2"
 panic-probe = { version = "0.3.0", features = ["print-defmt"] }
-cortex-m = "0.7.6"
+cortex-m = { version = "0.7.6", features = ["critical-section-single-core"] }
 rfb-proto = { path = "../proto", features = ["sensor"] }
 
 [dependencies.stm32f4xx-hal]
-version = "0.13.2"
+version = "0.14.0"
 features = ["stm32f411", "rt", "rtic-monotonic"]

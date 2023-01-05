@@ -42,5 +42,8 @@
 		{
 			"path": "RTIC-shared"
 		},
+		{
+			"path": "RTIC-queues"
+		}
 	]
 }
