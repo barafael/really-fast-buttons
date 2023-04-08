@@ -25,12 +25,8 @@ const SETTINGS: PortSettings = PortSettings {
 };
 
 fn get_port(path: impl AsRef<Path>) -> Result<TTYPort> {
-    let mut port = TTYPort::open(path.as_ref()).map_err(|e| {
-        anyhow!(
-            "Failed to open tty port \"{}\": {e}",
-            path.as_ref().display()
-        )
-    })?;
+    let mut port = TTYPort::open(path.as_ref())
+        .with_context(|| format!("Failed to open tty port \"{}\"", path.as_ref().display()))?;
     port.configure(&SETTINGS)
         .context("Failed to configure serial port")?;
     Ok(port)
