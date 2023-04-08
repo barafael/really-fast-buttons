@@ -25,7 +25,7 @@ embassy-stm32 = { version = "0.1.0", features = [
     "time-driver-any",
     "exti",
 ] }
-cortex-m-rt = "0.7.1"
+cortex-m-rt = "0.7.3"
 cortex-m = { version = "0.7.6", features = ["critical-section-single-core"] }
 
 [patch.crates-io]
