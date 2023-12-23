@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "actuator")]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Deserialize, Serialize, defmt::Format)]
+#[cfg_attr(feature = "use-defmt", derive(defmt::Format))]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[repr(C)]
 pub enum Request {
     Generate {
@@ -12,7 +13,8 @@ pub enum Request {
 }
 
 #[cfg(feature = "actuator")]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Deserialize, Serialize, defmt::Format)]
+#[cfg_attr(feature = "use-defmt", derive(defmt::Format))]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[repr(C)]
 pub enum Response {
     StartedGenerating,
