@@ -16,12 +16,7 @@ pub type Result<T> = anyhow::Result<T>;
 fn get_port(path: impl AsRef<Path>) -> Result<Box<dyn SerialPort>> {
     let port = serialport::new(path.as_ref().to_string_lossy(), 9600)
         .open()
-        .map_err(|e| {
-            anyhow!(
-                "Failed to open tty port \"{}\": {e}",
-                path.as_ref().display()
-            )
-        })?;
+        .with_context(|| format!("Failed to open tty port \"{}\"", path.as_ref().display()))?;
     Ok(port)
 }
 

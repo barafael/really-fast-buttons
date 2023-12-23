@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rfb-proto = { path = "../proto", features = ["sensor"] }
+rfb-proto = { path = "../proto", features = ["sensor", "use-defmt"] }
 panic-probe = { version = "0.3.0" }
 embassy-executor = { version = "0.1.0", features = [
     "defmt",
@@ -23,7 +23,7 @@ embassy-stm32 = { version = "0.1.0", features = [
     "time-driver-any",
     "exti",
 ] }
-cortex-m-rt = "0.7.1"
+cortex-m-rt = "0.7.3"
 cortex-m = { version = "0.7.6", features = ["critical-section-single-core"] }
 embedded-io = { version = "0.4.0", features = ["async"] }
 embassy-futures = "0.1.0"

@@ -1,6 +1,7 @@
 #![no_std]
 #![no_main]
 #![feature(type_alias_impl_trait)]
+#![forbid(unsafe_code)]
 
 use defmt_rtt as _;
 use embassy_futures::select::{select, Either};
