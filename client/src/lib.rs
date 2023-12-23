@@ -7,6 +7,7 @@ use serialport::SerialPort;
 use std::{
     io::{Read, Write},
     path::Path,
+    time::Duration,
 };
 
 pub mod arguments;
@@ -15,6 +16,7 @@ pub type Result<T> = anyhow::Result<T>;
 
 fn get_port(path: impl AsRef<Path>) -> Result<Box<dyn SerialPort>> {
     let port = serialport::new(path.as_ref().to_string_lossy(), 9600)
+        .timeout(Duration::from_millis(100))
         .open()
         .with_context(|| format!("Failed to open tty port \"{}\"", path.as_ref().display()))?;
     Ok(port)
