@@ -9,5 +9,5 @@ anyhow = "1.0.66"
 clap = "3"
 clap_derive = "3"
 klask = { git = "https://github.com/MichalGniadek/klask" }
-linux-embedded-hal = "0.3.2"
 rfb-proto = { path = "../proto", features = ["sensor", "actuator"] }
+serialport = "4"

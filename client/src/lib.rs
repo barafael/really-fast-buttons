@@ -1,38 +1,28 @@
 use anyhow::{anyhow, Context};
 use arguments::{Action, Args};
-use linux_embedded_hal::{
-    serial_core::{BaudRate, CharSize, FlowControl, Parity, PortSettings, SerialPort, StopBits},
-    serial_unix::TTYPort,
-};
 use rfb_proto::{
     from_bytes, to_vec, ActuatorRequest, ActuatorResponse, SensorRequest, SensorResponse,
 };
+use serialport::SerialPort;
 use std::{
     io::{Read, Write},
     path::Path,
+    time::Duration,
 };
 
 pub mod arguments;
 
 pub type Result<T> = anyhow::Result<T>;
 
-const SETTINGS: PortSettings = PortSettings {
-    baud_rate: BaudRate::Baud9600,
-    char_size: CharSize::Bits8,
-    parity: Parity::ParityNone,
-    stop_bits: StopBits::Stop1,
-    flow_control: FlowControl::FlowNone,
-};
-
-fn get_port(path: impl AsRef<Path>) -> Result<TTYPort> {
-    let mut port = TTYPort::open(path.as_ref())
+fn get_port(path: impl AsRef<Path>) -> Result<Box<dyn SerialPort>> {
+    let port = serialport::new(path.as_ref().to_string_lossy(), 9600)
+        .timeout(Duration::from_millis(100))
+        .open()
         .with_context(|| format!("Failed to open tty port \"{}\"", path.as_ref().display()))?;
-    port.configure(&SETTINGS)
-        .context("Failed to configure serial port")?;
     Ok(port)
 }
 
-fn get_device_id(port: &mut TTYPort) -> Result<String> {
+fn get_device_id(port: &mut Box<dyn SerialPort>) -> Result<String> {
     let request = SensorRequest::WhoAreYou;
     let bytes: rfb_proto::Vec<u8, 1> = to_vec(&request).unwrap();
     port.write_all(&bytes).context("Request failed")?;
